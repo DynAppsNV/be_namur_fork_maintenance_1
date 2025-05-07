@@ -8,7 +8,7 @@ from odoo.exceptions import ValidationError
 class AccountAnalyticLine(models.Model):
     _inherit = "account.analytic.line"
 
-    maintenance_request_id = fields.Many2one(comodel_name="maintenance.request")
+    maintenance_request_id = fields.Many2one(comodel_name="maintenance.request", store=True)
 
     @api.onchange("maintenance_request_id")
     def onchange_maintenance_request_id(self):
@@ -18,10 +18,11 @@ class AccountAnalyticLine(models.Model):
                 'task_id': self.maintenance_request_id.task_id
             })
 
-    @api.model
+    @api.model_create_multi
     def create(self, values):
-        if values.get("maintenance_request_id"):
-            self._check_request_done(values.get("maintenance_request_id"))
+        for val in values:
+            if val.get("maintenance_request_id"):
+                self._check_request_done(val.get("maintenance_request_id"))
         return super().create(values)
 
     def write(self, values):
