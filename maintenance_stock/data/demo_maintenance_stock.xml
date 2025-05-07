@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="stock_warehouse_maintenance" model="stock.warehouse">
+            <field name="name">Maintenance Warehouse</field>
+            <field name="partner_id" ref="stock.res_partner_address_41" />
+            <field name="company_id" ref="stock.res_company_1" />
+            <field name="code">Main</field>
+        </record>
+
+        <function model="ir.model.data" name="_update_xmlids">
+            <value
+                model="base"
+                eval="[{
+                'xml_id': 'maintenance_stock.main_picking_type_cons',
+                'record': obj().env.ref('maintenance_stock.stock_warehouse_maintenance').cons_type_id,
+                'noupdate': True,
+            }, {
+                'xml_id': 'maintenance_stock.main_location_stock',
+                'record': obj().env.ref('maintenance_stock.stock_warehouse_maintenance').lot_stock_id,
+                'noupdate': True,
+            }, {
+                'xml_id': 'maintenance_stock.main_location_cons',
+                'record': obj().env.ref('maintenance_stock.stock_warehouse_maintenance').wh_cons_loc_id,
+                'noupdate': True,
+            }]"
+            />
+        </function>
+
+        <record id="product_toner" model="product.product">
+            <field name="default_code">TON_1234</field>
+            <field name="name">Toner</field>
+            <field name="categ_id" ref="product.product_category_5" />
+            <field name="lst_price">100.0</field>
+            <field name="standard_price">70.0</field>
+            <field name="uom_id" ref="uom.product_uom_unit" />
+            <field name="uom_po_id" ref="uom.product_uom_unit" />
+            <field
+                name="image_1920"
+                type="base64"
+                file="maintenance_stock/static/img/toner.png"
+            />
+        </record>
+
+        <record id="maintenance.equipment_printer1" model="maintenance.equipment">
+            <field name="allow_consumptions" eval="True" />
+            <field
+                name="default_consumption_warehouse_id"
+                ref="maintenance_stock.stock_warehouse_maintenance"
+            />
+        </record>
+
+        <record id="m_request_1" model="maintenance.request">
+            <field name="name">Change toner</field>
+            <field name="user_id" ref="base.user_demo" />
+            <field name="owner_user_id" ref="base.user_admin" />
+            <field name="equipment_id" ref="maintenance.equipment_printer1" />
+            <field name="color">7</field>
+            <field name="stage_id" ref="maintenance.stage_1" />
+            <field
+                name="maintenance_team_id"
+                ref="maintenance.equipment_team_maintenance"
+            />
+        </record>
+
+    </data>
+</odoo>
