@@ -58,13 +58,10 @@
             <field name="maintenance_type" position="after">
                 <field name="maintenance_kind_id" />
             </field>
-            <xpath expr="//notebook/page[@name='description_page']" position="before">
-                    <page string="Instructions">
-                        <field name="note" placeholder="Describe the maintenance to do..." />
-                    </page>
-            </xpath>
-            <xpath expr="//notebook/page[@name='description_page']" position="attributes">
-                    <attribute name="string">Notes</attribute>
+            <xpath expr="//notebook" position="inside">
+                <page string="Instructions">
+                    <field name="note" placeholder="Describe the maintenance to do..." />
+                </page>
             </xpath>
         </field>
     </record>
