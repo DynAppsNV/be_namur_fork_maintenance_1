@@ -89,7 +89,9 @@ class MaintenancePlan(models.Model):
 
     @api.model
     def _search_search_equipment(self, operator, value):
-        if operator != "=" or (not value and not isinstance(value, models.NewId)):
+        if operator not in ("=", "in") or (
+            not value and not isinstance(value, models.NewId)
+        ):
             raise ValueError(_("Unsupported search operator"))
         plans = self.search([("generate_with_domain", "=", True)])
         plan_ids = []
@@ -101,7 +103,7 @@ class MaintenancePlan(models.Model):
                 )
             ):
                 plan_ids.append(plan.id)
-        return ["|", ("equipment_id", "=", value), ("id", "in", plan_ids)]
+        return ["|", ("equipment_id", operator, value), ("id", "in", plan_ids)]
 
     @api.depends("equipment_id")
     def _compute_search_equipment(self):
@@ -118,21 +120,14 @@ class MaintenancePlan(models.Model):
             "time": safe_eval.time,
         }
 
-    def name_get(self):
-        result = []
+    @api.depends("maintenance_kind_id.name", "equipment_id.name")
+    def _compute_display_name(self):
         for plan in self:
-            result.append(
-                (
-                    plan.id,
-                    plan.name
-                    or _(
-                        "Unnamed %(kind)s plan (%(eqpmt)s)",
-                        kind=plan.maintenance_kind_id.name or "",
-                        eqpmt=plan.equipment_id.name,
-                    ),
-                )
+            plan.display_name = plan.name or _(
+                "Unnamed %(kind)s plan (%(eqpmt)s)",
+                kind=plan.maintenance_kind_id.name or "",
+                eqpmt=plan.equipment_id.name,
             )
-        return result
 
     @api.depends("maintenance_ids.stage_id.done")
     def _compute_maintenance_count(self):
@@ -234,14 +229,11 @@ class MaintenancePlan(models.Model):
                 )
         return super().unlink()
 
-    _sql_constraints = [
-        (
-            "equipment_kind_uniq",
-            "unique (equipment_id, maintenance_kind_id)",
-            "You cannot define multiple times the same maintenance kind on an "
-            "equipment maintenance plan.",
-        )
-    ]
+    _equipment_kind_uniq = models.Constraint(
+        "unique (equipment_id, maintenance_kind_id)",
+        "You cannot define multiple times the same maintenance kind on an "
+        "equipment maintenance plan.",
+    )
 
     def button_manual_request_generation(self):
         """Call the same method that the cron for generating manually the maintenance
