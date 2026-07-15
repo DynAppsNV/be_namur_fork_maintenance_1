@@ -32,7 +32,7 @@
                             <span class="o_stat_text">Picking list</span>
                         </div>
                     </button>
-                    <button class="oe_stat_button" type="object" name="action_view_stock_move_ids" icon="fa-arrows-v" groups="base.group_no_one,stock.group_stock_user" invisible="not allow_consumptions" >
+                    <button class="oe_stat_button" type="object" name="action_view_stock_move_ids" icon="fa-arrows-v" groups="stock.group_stock_user" invisible="not allow_consumptions" >
                         <div class="o_form_field o_stat_info">
                             <span class="o_stat_text">Stock Moves</span>
                         </div>
@@ -43,7 +43,7 @@
                         </div>
                     </button>
             </xpath>
-            <xpath expr="//field[@name='location']" position="after">
+            <xpath expr="//group[@name='service_info_group']/group[1]" position="inside">
                     <field name="allow_consumptions" groups="stock.group_stock_user"/>
                     <field name="default_consumption_warehouse_id" invisible="not allow_consumptions" required="allow_consumptions" groups="stock.group_stock_user"/>
             </xpath>
