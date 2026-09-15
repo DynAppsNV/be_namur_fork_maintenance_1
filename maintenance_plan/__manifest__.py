@@ -3,7 +3,7 @@
 {
     "name": "Maintenance Plan",
     "summary": "Extends preventive maintenance planning",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.0.1",
     "author": "Camptocamp SA, ForgeFlow, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "category": "Maintenance",
@@ -18,7 +18,7 @@
         "views/maintenance_equipment_views.xml",
         "views/report_maintenance_request.xml",
     ],
-    "external_dependencies": {"python": ["dateutil"]},
+    "external_dependencies": {"python": ["python-dateutil"]},
     "demo": ["data/demo_maintenance_plan.xml"],
     "installable": True,
 }
